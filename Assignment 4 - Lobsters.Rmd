@@ -69,6 +69,36 @@ abun_trap_bubble
 
 
 ```
+Part 2. Compare mean lobster size by site in 2017
+Step 1: Get data into case/tidy format, remove COUNTS = 0, select observations from YEAR = 2017
+Step 2: Calculate mean lobster sizes (carapace length (mm)) across the five sites for observations in 2017
+Step 3: Test assumptions, exploratory graphs, summary statistics, Levene's test for equal variances
+Step 4: one-way (?) ANOVA
+Step 5: Post-hoc test (Tukey's HSD)
+Step 6: Create bar graph with error bars
+
+```{r}
+lobster_size_abundance <- read_csv("lobster_size_abundance.csv")
+
+count <- as.data.frame(lobster_size_abundance)
+lobster_size_tidy <- expand.dft(count, freq = "COUNT") #Expand data so it is in tidy format
+
+lobster_size <- lobster_size_tidy %>% 
+  filter(YEAR == 2017) #Remove observations where COUNTS = 0 and select observations only from 2017
+
+lobster_hists <- ggplot(lobster_size, aes(x = SIZE))+
+  geom_histogram(aes(fill = SITE)) + 
+  facet_wrap(~ SITE)
+
+lobster_hists
+
+lobster_qqplot <- ggplot(lobster_size, aes(sample = SIZE)) +
+  geom_qq() +
+  facet_wrap(~ SITE)
+
+lobster_qqplot
+#Data seem to be normally distributed based on our histograms and qqplots!
+```
 
 NUBMER FOUR - Chi Squared
 
