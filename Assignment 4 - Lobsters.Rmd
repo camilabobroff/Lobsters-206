@@ -1,0 +1,27 @@
+---
+title: "Assignment 4, Lobster"
+author: "Camila Bobroff, Lydia Bleifuss"
+date: "11/14/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = FALSE}
+library(tidyverse)
+library(pwr)
+library(knitr)
+library(plotly)
+library(extrafont)
+library(ggrepel)
+library(kableExtra)
+library(effsize)
+```
+
+```{r, include = FALSE}
+lob_size_abun <- read_csv("lobster_size_abundance.csv")
+lob_trap <- read_csv("lobster_traps.csv")
+```
+
