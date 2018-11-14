@@ -41,7 +41,8 @@ abun_year
 #Producing mean trap count by year
 
 trap_year <- lob_trap %>% 
-  group_by(YEAR, SITE) %>% 
+  filter( SITE != "CARP", SITE != "MOHK", SITE != "ABUR", SITE != "GOLB", SITE != "AHND to AQUE") %>% 
+  group_by(YEAR, SITE) %>%
   summarize(
     mean_trap = round(mean(TRAPS), digits = 2)
   )
@@ -49,14 +50,6 @@ trap_year
 ```
 
 ```{r}
-#Combining site rows to avoid future not working 'SITE' issues  
-bind_rows(trap_year %>%  add_rownames(),
-          abun_year %>% add_rownames()) %>% 
-  group_by(SITE) %>% 
-  summarise_all(sum)
-
-
-
 #Creating Bubble Scatter-plot for question 1. 
 abun_trap_bubble <- ggplot() +
   aes(x = trap_year$YEAR,
