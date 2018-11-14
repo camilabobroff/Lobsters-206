@@ -25,3 +25,24 @@ lob_size_abun <- read_csv("lobster_size_abundance.csv")
 lob_trap <- read_csv("lobster_traps.csv")
 ```
 
+```{r}
+#Producing mean abundance by year
+
+abun_year <- lob_size_abun %>%
+  group_by(YEAR) %>% 
+  filter(COUNT != "0") %>% 
+  summarize(
+    mean_abun = round(mean(COUNT), digits = 2)
+  )
+abun_year
+
+#Producing mean trap count by year
+
+trap_year <- lob_trap %>% 
+  group_by(YEAR) %>% 
+  summarize(
+    mean_trap = round(mean(TRAPS), digits = 2)
+  )
+trap_year
+```
+
