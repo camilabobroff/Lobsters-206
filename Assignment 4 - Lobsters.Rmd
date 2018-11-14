@@ -29,7 +29,7 @@ lob_trap <- read_csv("lobster_traps.csv")
 #Producing mean abundance by year
 
 abun_year <- lob_size_abun %>%
-  group_by(YEAR) %>% 
+  group_by(YEAR, SITE) %>% 
   filter(COUNT != "0") %>% 
   summarize(
     mean_abun = round(mean(COUNT), digits = 2)
@@ -39,10 +39,25 @@ abun_year
 #Producing mean trap count by year
 
 trap_year <- lob_trap %>% 
-  group_by(YEAR) %>% 
+  group_by(YEAR, SITE) %>% 
   summarize(
     mean_trap = round(mean(TRAPS), digits = 2)
   )
 trap_year
+```
+
+```{r}
+#Creating Bubble Scatter-plot for question 1. 
+
+abun_trap_bubble <- ggplot() +
+  aes(x = trap_year$YEAR,
+      y = trap_year$mean_trap,
+      label = abun_year$SITE) +
+  geom_point(aes(color = abun_year&SITE, size = abun_year$abun_mean)) +
+  geom_text_repel(size = 3) 
+
+abun_trap_bubble
+
+
 ```
 
