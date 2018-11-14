@@ -18,12 +18,14 @@ library(extrafont)
 library(ggrepel)
 library(kableExtra)
 library(effsize)
+library(dplyr)
 ```
 
 ```{r, include = FALSE}
 lob_size_abun <- read_csv("lobster_size_abundance.csv")
 lob_trap <- read_csv("lobster_traps.csv")
 ```
+NUMBER ONE
 
 ```{r}
 #Producing mean abundance by year
@@ -47,8 +49,15 @@ trap_year
 ```
 
 ```{r}
-#Creating Bubble Scatter-plot for question 1. 
+#Combining site rows to avoid future not working 'SITE' issues  
+bind_rows(trap_year %>%  add_rownames(),
+          abun_year %>% add_rownames()) %>% 
+  group_by(SITE) %>% 
+  summarise_all(sum)
 
+
+
+#Creating Bubble Scatter-plot for question 1. 
 abun_trap_bubble <- ggplot() +
   aes(x = trap_year$YEAR,
       y = trap_year$mean_trap,
@@ -60,4 +69,31 @@ abun_trap_bubble
 
 
 ```
+
+NUBMER FOUR - Chi Squared
+
+The legal minimum carapace size for lobster is 82.6 mm. What proportion of observed lobsters at each site are above the legal minimum? Does that proportion differ significantly across the 5 sites? 
+
+```{r}
+#Propper data frame 
+
+chi_size <- lob_size_abun %>% 
+  filter(COUNT != "0") %>% 
+  count(SITE, SIZE) %>% 
+  spread(SIZE, n) %>% 
+  select(-SITE)
+
+chi_size
+
+#Actual proportions:
+
+size_prop <- prop.table(as.matrix(chi_size), 1)
+size_prop 
+
+#Chi-squared 
+
+size_x2 <- chisq.test(chi_size)
+size_x2
+```
+
 
