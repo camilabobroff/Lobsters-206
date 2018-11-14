@@ -78,21 +78,19 @@ Step 5: Post-hoc test (Tukey's HSD)
 Step 6: Create bar graph with error bars
 
 ```{r}
-lobster_size_abundance <- read_csv("lobster_size_abundance.csv")
+count <- as.data.frame(lob_size_abun)
+lob_size_tidy <- expand.dft(count, freq = "COUNT") #Expand data so it is in tidy format
 
-count <- as.data.frame(lobster_size_abundance)
-lobster_size_tidy <- expand.dft(count, freq = "COUNT") #Expand data so it is in tidy format
-
-lobster_size <- lobster_size_tidy %>% 
+lob_size <- lob_size_tidy %>% 
   filter(YEAR == 2017) #Remove observations where COUNTS = 0 and select observations only from 2017
 
-lobster_hists <- ggplot(lobster_size, aes(x = SIZE))+
+lobster_hists <- ggplot(lob_size, aes(x = SIZE))+
   geom_histogram(aes(fill = SITE)) + 
   facet_wrap(~ SITE)
 
 lobster_hists
 
-lobster_qqplot <- ggplot(lobster_size, aes(sample = SIZE)) +
+lobster_qqplot <- ggplot(lob_size, aes(sample = SIZE)) +
   geom_qq() +
   facet_wrap(~ SITE)
 
