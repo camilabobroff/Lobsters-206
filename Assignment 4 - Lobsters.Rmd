@@ -59,19 +59,28 @@ abun_trap
 ```
 
 ```{r}
-#Creating Bubble Scatter-plot for question 1. 
-abun_trap_bubble <- ggplot(abun_trap, (aes(x = YEAR,
-      y = sum_trap, size = sum_abun, label = ""))) +
+#Creating Scatter-plots for question 1. 
+
+#Trap Totals
+trap_point <- ggplot(abun_trap, (aes(x = YEAR,
+      y = sum_trap,label = ""))) +
   geom_point(aes(color = SITE), alpha = 0.5) +
-  geom_text_repel(size = 5) +
   theme_classic() +
   scale_size(range = c(0,9)) +
   geom_line(aes(color = SITE), size = 0.5)
-  
 
-abun_trap_bubble
+trap_point
 
-#did not include y-expand because the dots would disappear 
+#Abundance Totals 
+abun_point <- ggplot(abun_trap, (aes(x = YEAR,
+      y = sum_abun,label = ""))) +
+  geom_point(aes(color = SITE), alpha = 0.5) +
+  theme_classic() +
+  scale_size(range = c(0,9)) +
+  geom_line(aes(color = SITE), size = 0.5)
+
+abun_point
+
 ```
 
 Part 2. Compare mean lobster size by site in 2017.
