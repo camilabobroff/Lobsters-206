@@ -37,7 +37,8 @@ abun_year <- lob_size_abun %>%
   filter(COUNT != "0") %>% 
   summarize(
     sum_abun = round(sum(COUNT), digits = 2)
-  )
+  ) %>% 
+  rename(Site = SITE)
 abun_year
 
 #Producing mean trap count by year
@@ -47,13 +48,14 @@ trap_year <- lob_trap %>%
   group_by(YEAR, SITE) %>%
   summarize(
     sum_trap = round(sum(TRAPS), digits = 2)
-  )
+  ) %>% 
+  rename(Site = SITE)
 trap_year
 
 #Join the data sets together so they pull the same year and corresponding data 
 
 abun_trap <- full_join(abun_year, trap_year) %>% 
-  select(YEAR, SITE, sum_abun, sum_trap)
+  select(YEAR, Site, sum_abun, sum_trap)
 
 abun_trap
 ```
@@ -64,10 +66,10 @@ abun_trap
 #Trap Totals
 trap_point <- ggplot(abun_trap, (aes(x = YEAR,
       y = sum_trap,label = ""))) +
-  geom_point(aes(color = SITE)) +
+  geom_point(aes(color = Site)) +
   theme_classic() +
   scale_size(range = c(0,9)) +
-  geom_line(aes(color = SITE), size = 0.5) +
+  geom_line(aes(color = Site), size = 0.5) +
   scale_y_continuous(expand = c(0,0), limits = c(0,1300)) +
   labs(x = "Year", y = "Site Trap Totals") +
   theme(text = element_text(family = "Times New Roman")) 
@@ -77,10 +79,10 @@ trap_point
 #Abundance Totals 
 abun_point <- ggplot(abun_trap, (aes(x = YEAR,
       y = sum_abun,label = ""))) +
-  geom_point(aes(color = SITE)) +
+  geom_point(aes(color = Site)) +
   theme_classic() +
   scale_size(range = c(0,9)) +
-  geom_line(aes(color = SITE), size = 0.5) +
+  geom_line(aes(color = Site), size = 0.5) +
    scale_y_continuous(expand = c(0,0), limits = c(0,800)) +
   labs(x = "Year", y = "Total Spiny Lobster Abundance") +
   theme(text = element_text(family = "Times New Roman")) 
