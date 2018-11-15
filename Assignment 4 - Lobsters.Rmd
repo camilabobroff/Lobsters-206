@@ -27,6 +27,7 @@ library(car)
 lob_size_abun <- read_csv("lobster_size_abundance.csv")
 lob_trap <- read_csv("lobster_traps.csv")
 ```
+
 NUMBER ONE
 
 ```{r}
@@ -42,22 +43,28 @@ abun_year
 #Producing mean trap count by year
 
 trap_year <- lob_trap %>% 
-  filter( SITE != "CARP", SITE != "MOHK", SITE != "ABUR", SITE != "GOLB", SITE != "AHND to AQUE") %>% 
+  filter( SITE != "AHND", SITE != "ABUR", SITE != "GOLB", SITE != "AHND to AQUE") %>% 
   group_by(YEAR, SITE) %>%
   summarize(
     mean_trap = round(mean(TRAPS), digits = 2)
   )
 trap_year
+
+#Join the data sets together so they pull the same year and corresponding data 
+
+abun_trap <- full_join(abun_year, trap_year) %>% 
+  select(YEAR, SITE, mean_abun, mean_trap)
+
+abun_trap
 ```
 
 ```{r}
 #Creating Bubble Scatter-plot for question 1. 
-abun_trap_bubble <- ggplot() +
-  aes(x = trap_year$YEAR,
-      y = trap_year$mean_trap,
-      label = abun_year$SITE) +
-  geom_point(aes(color = abun_year&SITE, size = abun_year$abun_mean)) +
-  geom_text_repel(size = 3) 
+abun_trap_bubble <- ggplot(abun_trap, (aes(x = YEAR,
+      y = mean_trap, label = SITE))) +
+  geom_point(aes(color = SITE, size = mean_abun)) +
+  geom_text_repel(size = 3) +
+  theme_classic()
 
 abun_trap_bubble
 
@@ -67,10 +74,13 @@ abun_trap_bubble
 Part 2. Compare mean lobster size by site in 2017.
 
 ```{r}
+
 #Step 1: Get data into case/tidy format
 
 count <- as.data.frame(lob_size_abun) #Coerce to data.frame so we can use expand.dft()
-lob_size_tidy2017 <- expand.dft(count, freq = "COUNT") %>%  #Expand data so it is in tidy format
+lob_size_tidy <- expand.dft(count, freq = "COUNT")#Expand data so it is in tidy format
+
+lob_size_tidy2017 <- lob_size_tidy %>% 
   filter(YEAR == 2017) #Keep observations only from 2017
 
 #Step 2: Calculate mean lobster sizes (carapace length (mm)) across the five sites for observations in 2017
@@ -251,8 +261,7 @@ The legal minimum carapace size for lobster is 82.6 mm. What proportion of obser
 ```{r}
 #Propper data frame 
 
-chi_size <- lob_size_abun %>%
-  filter(COUNT != "0") %>% 
+chi_size <- lob_size_tidy %>%
   count(SITE, SIZE) %>% 
   spread(SIZE, n) %>% 
   select(-SITE)
