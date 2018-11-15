@@ -61,14 +61,16 @@ abun_trap
 ```{r}
 #Creating Bubble Scatter-plot for question 1. 
 abun_trap_bubble <- ggplot(abun_trap, (aes(x = YEAR,
-      y = mean_trap, label = SITE))) +
-  geom_point(aes(color = SITE, size = mean_abun)) +
-  geom_text_repel(size = 3) +
-  theme_classic()
+      y = mean_trap, size = mean_abun, label = ""))) +
+  geom_point(aes(color = SITE), alpha = 0.5) +
+  geom_text_repel(size = 5) +
+  theme_classic() +
+  scale_size(range = c(0,9))
+  
 
 abun_trap_bubble
 
-
+#did not include y-expand because the dots would disappear 
 ```
 
 Part 2. Compare mean lobster size by site in 2017.
