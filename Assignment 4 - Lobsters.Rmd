@@ -31,7 +31,6 @@ NUMBER ONE
 
 ```{r}
 #Producing mean abundance by year
-
 abun_year <- lob_size_abun %>%
   group_by(YEAR, SITE) %>% 
   filter(COUNT != "0") %>% 
