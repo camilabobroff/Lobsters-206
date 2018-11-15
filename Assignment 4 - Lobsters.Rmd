@@ -64,7 +64,7 @@ abun_trap_bubble
 
 ```
 
-Part 2. Compare mean lobster size by site in 2017
+Part 2. Compare mean lobster size by site in 2017.
 
 ```{r}
 #Step 1: Get data into case/tidy format
