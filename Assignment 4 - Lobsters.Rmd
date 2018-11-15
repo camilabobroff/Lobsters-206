@@ -263,16 +263,30 @@ The legal minimum carapace size for lobster is 82.6 mm. What proportion of obser
 ```{r}
 #Propper data frame 
 
-chi_size <- lob_size_tidy %>%
-  count(SITE, SIZE) %>% 
-  spread(SIZE, n) %>% 
-  select(-SITE)
+lob_chi <- lob_size_tidy2017 %>% 
+  group_by(SITE) %>% 
+  mutate(
+    limit = case_when(SIZE > 82.6 ~ "greater", SIZE < 82.6 ~ "less_than")
+  )
+
+chi_size <- lob_chi %>%
+  count(SITE, limit) %>% 
+  spread(limit, n) %>% 
+   select(-SITE)
 
 chi_size
 
+rownames(chi_size) <- c("AQUE","CARP","IVEE","MOHK","NAPL")
+
+
+chi_final <- chi_size %>% 
+  select(greater, less_than)
+
+chi_final
+
 #Actual proportions:
 
-size_prop <- prop.table(as.matrix(chi_size), 1)
+size_prop <- prop.table(as.matrix(chi_final), 1)
 size_prop 
 
 #Chi-squared 
