@@ -19,6 +19,8 @@ library(ggrepel)
 library(kableExtra)
 library(effsize)
 library(dplyr)
+library(vcdExtra)
+library(car)
 ```
 
 ```{r, include = FALSE}
@@ -69,34 +71,186 @@ abun_trap_bubble
 
 
 ```
+
 Part 2. Compare mean lobster size by site in 2017
-Step 1: Get data into case/tidy format, remove COUNTS = 0, select observations from YEAR = 2017
-Step 2: Calculate mean lobster sizes (carapace length (mm)) across the five sites for observations in 2017
-Step 3: Test assumptions, exploratory graphs, summary statistics, Levene's test for equal variances
-Step 4: one-way (?) ANOVA
-Step 5: Post-hoc test (Tukey's HSD)
-Step 6: Create bar graph with error bars
 
 ```{r}
-count <- as.data.frame(lob_size_abun)
-lob_size_tidy <- expand.dft(count, freq = "COUNT") #Expand data so it is in tidy format
+#Step 1: Get data into case/tidy format
 
-lob_size <- lob_size_tidy %>% 
-  filter(YEAR == 2017) #Remove observations where COUNTS = 0 and select observations only from 2017
+count <- as.data.frame(lob_size_abun) #Coerce to data.frame so we can use expand.dft()
+lob_size_tidy2017 <- expand.dft(count, freq = "COUNT") %>%  #Expand data so it is in tidy format
+  filter(YEAR == 2017) #Keep observations only from 2017
 
-lobster_hists <- ggplot(lob_size, aes(x = SIZE))+
+#Step 2: Calculate mean lobster sizes (carapace length (mm)) across the five sites for observations in 2017
+
+lob_size_summary <- lob_size_tidy2017 %>% 
+  group_by(SITE) %>% 
+  summarize(
+    mean_size2017 = mean(SIZE),
+    sample_size = length(SITE)
+  )
+#Step 3: Test assumptions, exploratory graphs, summary statistics, Levene's test for equal variances
+
+lobster_hists <- ggplot(lob_size_tidy2017, aes(x = SIZE))+
   geom_histogram(aes(fill = SITE)) + 
   facet_wrap(~ SITE)
 
 lobster_hists
 
-lobster_qqplot <- ggplot(lob_size, aes(sample = SIZE)) +
+lobster_qqplot <- ggplot(lob_size_tidy2017, aes(sample = SIZE)) +
   geom_qq() +
   facet_wrap(~ SITE)
 
 lobster_qqplot
 #Data seem to be normally distributed based on our histograms and qqplots!
+
+# Levene's test for equal variances (> 2 groups)
+
+# H0: Variances are equal
+# HA: Variances are unequal
+
+lobster_levene <- leveneTest(SIZE ~ SITE, data = lob_size_tidy2017)
+lobster_levene
+
+# We reject the null hypothesis of equal variances (p < 0.001)...
+
+variances <- lob_size_tidy2017 %>% 
+  group_by(SITE) %>% 
+  summarize(
+    variance = var(SIZE)
+  )
+
+variances
+
+# Because the largest variance is less than 4 times greater than the smallest variances, we can use an ANOVA to compare means.
+
+#Step 4: One-way ANOVA
+#Single factor: SITE | Number of levels: 5 (AQUE, CARP, IVEE, MOHK, NAPL) | Random variable: SIZE (carapace length (mm))
+
+#QUESTION: Is there a significant difference in carapace length (mm) in AQUE, CARP, IVEE, MOHK, and NAPL?
+
+# H0: Mean lobster carapace length across all sites are equal 
+# HA: At LEAST two means differ significantly
+
+lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
+summary(lobster_aov)
+
+# At least two samples were taken from populations with different means (P = .009). Which ones are different?
+
+#Step 5: Post-hoc test (Tukey's HSD)
+
+lobster_ph <- TukeyHSD(lobster_aov)
+lobster_ph
 ```
+Mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statstic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
+```{r}
+#Step 6: Create bar graph with error bars
+
+lob_size_graph <- lob_size_tidy2017 %>% 
+  ggplot(aes(x = SITE, y = SIZE)) +
+  geom_col(aes(fill = SITE), position = "dodge") +
+  theme_classic()
+
+lob_size_graph
+
+```
+
+Part 3. Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)
+
+```{r}
+#Step 1: Calculate mean size at MPA and non-MPA sites for 2012 and 2017. Data exploration.
+
+lob_size_MPA <- lob_size_tidy %>% 
+  filter(SITE == "IVEE" | SITE == "NAPL") %>% 
+  filter(YEAR == "2012" | YEAR == "2017") %>% 
+  group_by(YEAR)
+
+MPA_summary <- lob_size_MPA %>% 
+  summarize(
+    mean_size = mean(SIZE)
+  )
+
+lob_size_nonMPA <- lob_size_tidy %>% 
+  filter(SITE != "IVEE" | SITE != "NAPL") %>% 
+  filter(YEAR == "2012" | YEAR == "2017") %>% 
+  group_by(YEAR)
+
+nonMPA_summary <- lob_size_nonMPA %>% 
+  summarize(
+    mean_size = mean(SIZE)
+  )
+
+#Step 2: Test assumptions (MPA sites)
+MPA_hists <- ggplot(lob_size_MPA, aes(x = SIZE))+
+  geom_histogram(aes(fill = SITE)) + 
+  facet_wrap(~ SITE)
+
+MPA_hists
+
+MPA_qqplot <- ggplot(lob_size_MPA, aes(sample = SIZE)) +
+  geom_qq() +
+  facet_wrap(~ SITE)
+
+MPA_qqplot
+#Based on our histograms and qqplots, our data looks normal
+
+# F-test for equal variances
+# H0: Variances are equal (ratio of variances = 1)
+# HA: Variances are not equal (ratio of variances is NOT = 1)
+
+MPA_ftest <- lob_size_MPA %>% 
+  var.test(SIZE ~ YEAR, data = .) # data = . is saying to access the most recent datafarme used
+
+MPA_ftest # Retain the null hypothesis of equal variances (p-value = 0.33)
+# We can override the default setting in t.test() function of var.equal = FALSE
+
+#Step 3: Two sided, two sample t-test to compare lobster size at MPA sites
+
+#HO: Lobsters at MPA sites are NOT significantly larger in 2017 than in 2012
+#HA: Lobsters at MPA sites are significantly larger in 2017 than in 2012
+
+MPA_ttest <- lob_size_MPA %>%
+  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
+
+MPA_ttest
+
+#Step 4: Test assumptions (non-MPA sites)
+nonMPA_hists <- ggplot(lob_size_nonMPA, aes(x = SIZE))+
+  geom_histogram(aes(fill = SITE)) + 
+  facet_wrap(~ SITE)
+
+nonMPA_hists
+
+nonMPA_qqplot <- ggplot(lob_size_nonMPA, aes(sample = SIZE)) +
+  geom_qq() +
+  facet_wrap(~ SITE)
+
+nonMPA_qqplot
+#Based on our histograms and qqplots, our data looks normal
+
+# F-test for equal variances
+# H0: Variances are equal (ratio of variances = 1)
+# HA: Variances are not equal (ratio of variances is NOT = 1)
+
+nonMPA_ftest <- lob_size_nonMPA %>% 
+  var.test(SIZE ~ YEAR, data = .) # data = . is saying to access the most recent datafarme used
+
+nonMPA_ftest # Retain the null hypothesis of equal variances (p-value = 0.43)
+# We can override the default setting in t.test() function of var.equal = FALSE
+
+#Step 3: One sided, two sample t-test to compare lobster size at non-MPA sites
+
+#HO: Mean lobster lengths at non-MPA sites are NOT significantly different between 2012 and 2017
+#HA: Mean lobster lengths at non-MPA sites are significantly different in 2012 and 2017
+
+nonMPA_ttest <- lob_size_nonMPA %>%
+  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
+
+nonMPA_ttest
+```
+Lobster lengths at MPA sites in 2017 (mean ± sd [units], n = sample size) are significantly larger than those in 2012 (mean ± sd [units], n = sample size) [t(`r MPA_ttest$parameter`) = `r round(MPA_ttest$statistic,2)`, *p* = `r round(MPA_ttest$p.value,3)`, $\alpha$ = 0.05].
+
+Lobster lengths at non-MPA sites in 2017 (mean ± sd [units], n = sample size) do not differ significanly than those in 2012 (mean ± sd [units], n = sample size) [t(`r nonMPA_ttest$parameter`) = `r round(nonMPA_ttest$statistic,2)`, *p* = `r round(nonMPA_ttest$p.value,3)`, $\alpha$ = 0.05].
 
 NUBMER FOUR - Chi Squared
 
