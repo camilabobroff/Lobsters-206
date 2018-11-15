@@ -36,7 +36,7 @@ abun_year <- lob_size_abun %>%
   group_by(YEAR, SITE) %>% 
   filter(COUNT != "0") %>% 
   summarize(
-    mean_abun = round(mean(COUNT), digits = 2)
+    sum_abun = round(sum(COUNT), digits = 2)
   )
 abun_year
 
@@ -46,14 +46,14 @@ trap_year <- lob_trap %>%
   filter( SITE != "AHND", SITE != "ABUR", SITE != "GOLB", SITE != "AHND to AQUE") %>% 
   group_by(YEAR, SITE) %>%
   summarize(
-    mean_trap = round(mean(TRAPS), digits = 2)
+    sum_trap = round(sum(TRAPS), digits = 2)
   )
 trap_year
 
 #Join the data sets together so they pull the same year and corresponding data 
 
 abun_trap <- full_join(abun_year, trap_year) %>% 
-  select(YEAR, SITE, mean_abun, mean_trap)
+  select(YEAR, SITE, sum_abun, sum_trap)
 
 abun_trap
 ```
@@ -61,7 +61,7 @@ abun_trap
 ```{r}
 #Creating Bubble Scatter-plot for question 1. 
 abun_trap_bubble <- ggplot(abun_trap, (aes(x = YEAR,
-      y = mean_trap, size = mean_abun, label = ""))) +
+      y = sum_trap, size = sum_abun, label = ""))) +
   geom_point(aes(color = SITE), alpha = 0.5) +
   geom_text_repel(size = 5) +
   theme_classic() +
