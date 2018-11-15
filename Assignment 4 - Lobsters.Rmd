@@ -30,7 +30,7 @@ lob_trap <- read_csv("lobster_traps.csv")
 
 NUMBER ONE
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 #Producing mean abundance by year
 abun_year <- lob_size_abun %>%
   group_by(YEAR, SITE) %>% 
@@ -58,7 +58,7 @@ abun_trap <- full_join(abun_year, trap_year) %>%
 abun_trap
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 #Creating Scatter-plots for question 1. 
 
 #Trap Totals
@@ -91,7 +91,7 @@ abun_point
 
 Part 2. Compare mean lobster size by site in 2017.
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 
 #Step 1: Get data into case/tidy format
 
@@ -163,7 +163,7 @@ lobster_ph <- TukeyHSD(lobster_aov)
 lobster_ph
 ```
 Mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statstic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
-```{r}
+```{r, echo = FALSE, message = FALSE}
 #Step 6: Create bar graph with error bars
 
 lob_size_graph <- lob_size_tidy2017 %>% 
@@ -177,7 +177,7 @@ lob_size_graph
 
 Part 3. Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 #Step 1: Calculate mean size at MPA and non-MPA sites for 2012 and 2017. Data exploration.
 
 lob_size_MPA <- lob_size_tidy %>% 
@@ -276,7 +276,7 @@ NUBMER FOUR - Chi Squared
 
 The legal minimum carapace size for lobster is 82.6 mm. What proportion of observed lobsters at each site are above the legal minimum? Does that proportion differ significantly across the 5 sites? 
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 #Propper data frame 
 
 lob_chi <- lob_size_tidy2017 %>% 
