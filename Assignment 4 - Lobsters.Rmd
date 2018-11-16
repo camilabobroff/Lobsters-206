@@ -22,6 +22,7 @@ library(dplyr)
 library(vcdExtra)
 library(car)
 library(ggpubr)
+library(ggplot2)
 ```
 
 ```{r, include = FALSE}
@@ -153,7 +154,6 @@ lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
 #Step 5: Post-hoc test (Tukey's HSD)
 
 lobster_ph <- TukeyHSD(lobster_aov)
-lobster_ph
 ```
 Mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statstic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
 ```{r, echo = FALSE, message = FALSE}
@@ -162,20 +162,12 @@ Mean lobster carapace length differ significantly between Naples Reef and Carpin
 # Global test
 compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
 
-lob_boxplot <- ggplot(lob_size_tidy2017, aes(x = SITE, y = SIZE))+
-  geom_boxplot(aes(fill = SITE, colour = SITE), alpha = 0.5, show.legend = FALSE)+
-  labs(title="Mean Lobster Sizes by Location in 2017", 
-                    x ="Location",
-                    y = "Mean Carapace Length (mm)")+
-  theme_classic()+
-  theme(legend.position = "none")+
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
-  stat_compare_means(method = "anova", label.y = 170)+ # Add global p-value
-  stat_compare_means(label = "p.signif", method = "t.test",
-                     ref.group = "0.5") # Pairwise comparison against
-
-lob_boxplot
+lob_size_graph <- lob_size_tidy2017 %>% 
+   ggplot(aes(x = SITE, y = mean_size2017)) +
+   geom_col(aes(fill = SITE), position = "dodge") +
+   theme_classic()
+ 
+lob_size_graph
 ```
 
 Part 3. Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)
