@@ -23,6 +23,7 @@ library(vcdExtra)
 library(car)
 library(ggpubr)
 library(ggplot2)
+library(ggsignif)
 ```
 
 ```{r, include = FALSE}
@@ -63,7 +64,7 @@ abun_trap <- full_join(abun_year, trap_year) %>%
 #Trap Totals
 trap_point <- ggplot(abun_trap, (aes(x = YEAR,
       y = sum_trap,label = ""))) +
-  geom_point(aes(color = Site)) +
+  geom_point(aes(color = Site))+
   theme_classic() +
   scale_size(range = c(0,9)) +
   geom_line(aes(color = Site), size = 0.5) +
@@ -164,8 +165,19 @@ compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
 
 lob_size_graph <- lob_size_tidy2017 %>% 
    ggplot(aes(x = SITE, y = mean_size2017)) +
-   geom_col(aes(fill = SITE), position = "dodge") +
-   theme_classic()
+   geom_col(aes(fill = SITE), position = "dodge", show.legend = FALSE) +
+  labs(y = "Mean Lobster Carapace Length (mm)", x = "Location")+
+  geom_signif(comparisons = list(c("NAPL", "CARP")), annotations = "p = 0.023", y_position = 95, tip_length = 0.1, size = 0.5, textsize = 3)+
+   theme_classic()+
+  geom_signif(comparisons = list(c("NAPL", "IVEE")), annotations = "p = 0.004", y_position = 110, tip_length = 0.1, size = 0.5, textsize = 3)+
+  scale_y_continuous(expand = c(0,0), limits=c(0,130))+
+  scale_y_continuous(expand = c(0,0), limits=c(0,130))+
+  geom_errorbar(aes(ymin=mean_size2017-sd_size, ymax=mean_size2017+sd_size), width=.2)+
+  scale_x_discrete(labels=c("AQUE" = "Arroyo Quemado",
+                   "CARP" = "Carpinteria",
+                   "IVEE" = "Isla Vista",
+                   "MOHK" = "Mohawk Reef",
+                   "NAPL" = "Naples Reef"))
  
 lob_size_graph
 ```
