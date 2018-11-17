@@ -164,7 +164,7 @@ Mean lobster carapace length differ significantly between Naples Reef and Carpin
 lob_aov_table <- xtable(lobster_aov, caption = "2017 Mean Lobster Size ANOVA results summary.")
 print(lob_aov_table, comment = FALSE, caption.placement = "top")
 
-htmltools::html_print(lob_aov_table)
+lob_aov_table
 
 # Global test
 compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
@@ -200,7 +200,8 @@ lob_size_IVEE <- lob_size_tidy %>%
 
 IVEE_summary <- lob_size_IVEE %>% 
   summarize(
-    mean_size = mean(SIZE)
+    mean_size = mean(SIZE),
+    sample_size = length(SIZE) #Sample sizes are VERY different, only 26 observations for IVEE in 2012
   )
 
 lob_size_NAPL <- lob_size_tidy %>% 
@@ -210,7 +211,8 @@ lob_size_NAPL <- lob_size_tidy %>%
 
 NAPL_summary <- lob_size_NAPL %>% 
   summarize(
-    mean_size = mean(SIZE)
+    mean_size = mean(SIZE),
+    sample_size = length(SIZE) #Sample sizes are very different again, only 6 observations in 2012 for NAPL! Might be something to mention in the write up..
   )
 
 lob_size_AQUE <- lob_size_tidy %>% 
@@ -220,7 +222,8 @@ lob_size_AQUE <- lob_size_tidy %>%
 
 AQUE_summary <- lob_size_AQUE %>% 
   summarize(
-    mean_size = mean(SIZE)
+    mean_size = mean(SIZE),
+    sample_size = length(SIZE)
   )
 
 lob_size_MOHK <- lob_size_tidy %>% 
@@ -230,7 +233,8 @@ lob_size_MOHK <- lob_size_tidy %>%
 
 MOHK_summary <- lob_size_MOHK %>% 
   summarize(
-    mean_size = mean(SIZE)
+    mean_size = mean(SIZE),
+    sample_size = length(SIZE)
   )
 
 lob_size_CARP <- lob_size_tidy %>% 
@@ -240,7 +244,8 @@ lob_size_CARP <- lob_size_tidy %>%
 
 CARP_summary <- lob_size_CARP %>% 
   summarize(
-    mean_size = mean(SIZE)
+    mean_size = mean(SIZE),
+    sample_size = length(SIZE)
   )
 
 #Step 2: Test assumptions (each site)
@@ -296,8 +301,37 @@ CARP_ftest <- lob_size_CARP %>%
 IVEE_ttest <- lob_size_IVEE %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
 
+#P=0.029, reject the null
+
+#Power analysis
+IVEE_2012 <- lob_size_IVEE %>% 
+ filter(YEAR == "2012") %>% 
+ pull(SIZE)
+ 
+IVEE_2017 <- lob_size_IVEE %>% 
+ filter(YEAR == "2017") %>% 
+ pull(SIZE)
+
+IVEE_effsize <- cohen.d(IVEE_2012,IVEE_2017)
+#Small effect size
+
 NAPL_ttest <- lob_size_NAPL %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
+
+#P=0.25, retain the null
+
+#Power analysis
+NAPL_2012 <- lob_size_NAPL %>% 
+ filter(YEAR == "2012") %>% 
+ pull(SIZE)
+ 
+NAPL_2017 <- lob_size_NAPL %>% 
+ filter(YEAR == "2017") %>% 
+ pull(SIZE)
+
+NAPL_effsize <- cohen.d(NAPL_2012,NAPL_2017)
+NAPL_effsize
+#Small effect size
 
 #Step 3: Two sided, two sample t-test to compare lobster size at non-MPA sites (AQUE, MOHK, and CARP)
 
@@ -306,12 +340,52 @@ NAPL_ttest <- lob_size_NAPL %>%
 
 AQUE_ttest <- lob_size_AQUE %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, data = .)
+#P=0.21, retain the null
+
+#Power analysis
+AQUE_2012 <- lob_size_AQUE %>% 
+ filter(YEAR == "2012") %>% 
+ pull(SIZE)
+ 
+AQUE_2017 <- lob_size_AQUE %>% 
+ filter(YEAR == "2017") %>% 
+ pull(SIZE)
+
+AQUE_effsize <- cohen.d(AQUE_2012,AQUE_2017)
+#Small effect size
 
 MOHK_ttest <- lob_size_MOHK %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, data = .)
 
+#P<.001, reject the null
+
+MOHK_2012 <- lob_size_MOHK %>% 
+ filter(YEAR == "2012") %>% 
+ pull(SIZE)
+ 
+MOHK_2017 <- lob_size_MOHK %>% 
+ filter(YEAR == "2017") %>% 
+ pull(SIZE)
+
+MOHK_effsize <- cohen.d(MOHK_2012,MOHK_2017)
+#Medium effect size! (Cohen's d = 0.54)
+
 CARP_ttest <- lob_size_CARP %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, data = .)
+
+#P=0.182, retain the null
+CARP_2012 <- lob_size_CARP %>% 
+ filter(YEAR == "2012") %>% 
+ pull(SIZE)
+ 
+CARP_2017 <- lob_size_CARP %>% 
+ filter(YEAR == "2017") %>% 
+ pull(SIZE)
+
+CARP_effsize <- cohen.d(CARP_2012,CARP_2017)
+CARP_effsize
+#Negligible effect size
+
 ```
 Mean lobster lengths in Isla Vista (mean ± sd [units], n = sample size) and Mohawk Reef (mean ± sd [units], n = sample size) differ signifcantly in 2012 and 2017 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.05], t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05, respectively]). Notably, lobster length in 2017 was larger in 2017 than in 2012 for Isla Vista, an MPA site, and smaller for Mohawk Reef, a non-MPA site.
 
@@ -323,7 +397,7 @@ The legal minimum carapace size for lobster is 82.6 mm. What proportion of obser
 
 lob_chi <- lob_size_tidy2017 %>% 
   mutate(
-    limit = case_when(SIZE > 82.6 ~ "greater", SIZE < 82.6 ~ "less_than")
+    limit = case_when(SIZE > 82.6 ~ "legal", SIZE < 82.6 ~ "illegal")
   )
 
 chi_size <- lob_chi %>%
@@ -341,4 +415,4 @@ size_prop <- prop.table(as.matrix(chi_size), 1)
 
 size_x2 <- chisq.test(chi_size)
 ```
-The proportion of observed lobsters at each site that are above the legal minimum (82.6 mm) differ significantly across the 5 sites ($\chi^2${`r size_x2$parameter`} = ....., p < 0.001). Notably, ...
+There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = ....., p < 0.001). Notably, ...
