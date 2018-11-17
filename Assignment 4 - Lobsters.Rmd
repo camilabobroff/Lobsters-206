@@ -24,6 +24,7 @@ library(car)
 library(ggpubr)
 library(ggplot2)
 library(ggsignif)
+library(xtable)
 ```
 
 ```{r, include = FALSE}
@@ -111,8 +112,8 @@ lob_size_tidy2017 <- lob_size_tidy %>%
 lob_size_summary <- lob_size_tidy2017 %>% 
   group_by(SITE) %>% 
   summarize(
-    mean_size2017 = mean(SIZE),
-    sd_size = sd(SIZE),
+    mean_size2017 = round(mean(SIZE),1),
+    sd_size = round(sd(SIZE),1),
     sample_size = length(SITE)
   )
 #Step 3: Test assumptions, exploratory graphs, summary statistics, Levene's test for equal variances
@@ -157,8 +158,13 @@ lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
 lobster_ph <- TukeyHSD(lobster_aov)
 ```
 Mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statstic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
-```{r, echo = FALSE, message = FALSE}
-#Step 6: Create column graph with error bars indicating ±1 standard deviation
+```{r, r ANOVA_table, echo = FALSE, results = 'asis', message = FALSE}
+#Step 6: Create table and column graph with error bars indicating ±1 standard deviation
+
+lob_aov_table <- xtable(lobster_aov, caption = "2017 Mean Lobster Size ANOVA results summary.")
+print(lob_aov_table, comment = FALSE, caption.placement = "top")
+
+htmltools::html_print(lob_aov_table)
 
 # Global test
 compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
