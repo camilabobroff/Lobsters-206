@@ -2,7 +2,8 @@
 title: "Assignment 4, Lobster"
 author: "Camila Bobroff, Lydia Bleifuss"
 date: "11/14/2018"
-output: html_document
+output:
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -77,7 +78,10 @@ abun_point <- ggplot(abun_trap, (aes(x = YEAR,
                          labels=c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef")) #Change legend labels
 
 abun_point
+```
 
+**Figure 1. Lobster Abundance in the Santa Barbara Channel (2012 - 2017).** Counts of California spiny lobster collected annually in late summer before the fishing season (data collected by SBC LTER)^3^.
+```{r echo = FALSE, message = FALSE}
 #Trap Totals
 trap_point <- ggplot(abun_trap, (aes(x = YEAR,
       y = sum_trap,label = ""))) +
@@ -94,6 +98,8 @@ trap_point <- ggplot(abun_trap, (aes(x = YEAR,
 
 trap_point
 ```
+
+**Figure 2. Lobster Traps in the Santa Barbara Channel (2012 - 2017).** Counts of commercial trap floats collected every two to four weeks during the fishing season (data collected by SBC LTER)^3^.
 
 Part 2. Compare mean lobster size by site in 2017.
 
@@ -170,6 +176,25 @@ In 2017, mean lobster carapace length differ significantly between Naples Reef a
 
 lob_aov_table <- xtable(lobster_aov, caption = "2017 Mean Lobster Size ANOVA results summary.")
 print(lob_aov_table, comment = FALSE, caption.placement = "top")
+
+lob_boxplot <- ggplot(lob_size_tidy2017, aes(x = SITE, y = SIZE))+
+  geom_boxplot(aes(fill = SITE, colour = SITE), alpha = 0.5, show.legend = FALSE)+
+  labs(title="Lobster Sizes by Location in 2017", 
+                    x ="Location",
+                    y = "Carapace Length (mm)")+
+  theme_classic()+
+  theme(legend.position = "none")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  stat_compare_means(method = "anova", label.y = 170)+ # Add global p-value
+  stat_compare_means(label = "p.signif", method = "t.test",
+                     ref.group = "0.5")+ # Pairwise comparison against
+    scale_x_discrete(labels=c("AQUE" = "Arroyo Quemado",
+                   "CARP" = "Carpinteria",
+                   "IVEE" = "Isla Vista",
+                   "MOHK" = "Mohawk Reef",
+                   "NAPL" = "Naples Reef"))
+ lob_boxplot
 
 # Global test
 compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
