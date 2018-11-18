@@ -164,7 +164,8 @@ lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
 lobster_ph <- TukeyHSD(lobster_aov)
 lobster_ph
 ```
-In 2017, mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = `r round(lobster_aov$statistic,2)`, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
+In 2017, mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statistic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
+
 ```{r, r ANOVA_table, echo = FALSE, results = 'asis', message = FALSE}
 #Step 6: Create table and column graph with error bars indicating ±1 standard deviation
 
