@@ -439,12 +439,10 @@ rownames(chi_size) <- c("AQUE","CARP","IVEE","MOHK","NAPL")
 
 #Actual proportions:
 size_prop <- prop.table(as.matrix(chi_size), 1)
-size_prop
 
 #Chi-squared 
 #H0: No significant difference between proportions at the different sites
 
 size_x2 <- chisq.test(chi_size)
-size_x2
 ```
 There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = ....., p < 0.001). Notably, ...
