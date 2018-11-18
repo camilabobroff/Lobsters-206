@@ -241,6 +241,20 @@ Part 3. Changes in lobster size at MPA and non-MPA sites (comparing only 2012 an
 ```{r, echo = FALSE, message = FALSE}
 #Step 1: Calculate mean size at each site for 2012 and 2017. Data exploration.
 
+graph_size_change <- lob_size_tidy %>% 
+  filter(YEAR == "2012" | YEAR == "2017") %>%
+  group_by(YEAR) %>% 
+  select(YEAR, SITE, SIZE) %>% 
+  ggplot(aes(x = SITE, y = SIZE, group = YEAR))+
+    geom_col(position = 'dodge', aes(fill = YEAR))+
+  theme(legend.position = c(2012, 2017))+
+  theme_classic()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  scale_y_continuous(expand = c(0,0), limits=c(0,130))+
+  scale_y_continuous(expand = c(0,0), limits=c(0,130))
+graph_size_change
+
 lob_size_IVEE <- lob_size_tidy %>% 
   filter(SITE == "IVEE") %>%  
   filter(YEAR == "2012" | YEAR == "2017") %>% 
