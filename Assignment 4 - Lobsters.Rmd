@@ -162,8 +162,9 @@ lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
 #Step 5: Post-hoc test (Tukey's HSD)
 
 lobster_ph <- TukeyHSD(lobster_aov)
+lobster_ph
 ```
-Mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statstic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
+In 2017, mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = `r round(lobster_aov$statistic,2)`, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
 ```{r, r ANOVA_table, echo = FALSE, results = 'asis', message = FALSE}
 #Step 6: Create table and column graph with error bars indicating ±1 standard deviation
 
@@ -329,9 +330,9 @@ CARP_ftest <- lob_size_CARP %>%
 #HA: Lobsters are significantly larger in 2017 than in 2012
 
 IVEE_ttest <- lob_size_IVEE %>%
-  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
-
-#P=0.029, reject the null
+  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = ., conf.level = 0.975)
+IVEE_ttest
+#P=0.03, reject the null
 
 #Power analysis
 IVEE_2012 <- lob_size_IVEE %>% 
@@ -346,8 +347,7 @@ IVEE_effsize <- cohen.d(IVEE_2012,IVEE_2017)
 #Small effect size (and remember that IVEE had a VERY small sample size in 2012)
 
 NAPL_ttest <- lob_size_NAPL %>%
-  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = .)
-
+  t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = ., conf.level = 0.975)
 #P=0.25, retain the null
 
 #Power analysis
@@ -416,7 +416,7 @@ CARP_effsize <- cohen.d(CARP_2012,CARP_2017)
 #Negligible effect size
 
 ```
-Mean lobster lengths in Isla Vista (mean ± sd [units], n = sample size) and Mohawk Reef (mean ± sd [units], n = sample size) differ signifcantly in 2012 and 2017 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.05], t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05, respectively]). Despite the significant findings that lobster length in 2017 was larger 2012 for Isla Vista, an MPA site, there is a small effect size and number of observations was very low for 2012 (6 observations). On the other hand, lobsters at Mohawk Reef (a non-MPA site) were significantly smaller in 2017 than in 2012, with a medium effect size.
+Mean lobster lengths in Isla Vista (mean ± sd [units], n = sample size) and Mohawk Reef (mean ± sd [units], n = sample size) differ signifcantly in 2012 and 2017 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.05], t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05, respectively]). Despite the significant findings that lobster length in 2017 was larger than 2012 for Isla Vista, an MPA site, there is a small effect size and number of observations was very low for 2012 (6 observations). On the other hand, lobsters at Mohawk Reef (a non-MPA site) were significantly smaller in 2017 than in 2012, with a medium effect size. Given these results, while there is an overall increase in lobster lengths at MPA sites, the magnitude of this increase is small. However, the decrease in lobster size in non-MPA sites in combination with the medium effect size is notable.
 (NOTE TO SELF:NEEDS TO BE RE-WORDED)
 
 Part 4. Proportions of "legal" lobsters at the 5 sites in 2017
@@ -439,10 +439,12 @@ rownames(chi_size) <- c("AQUE","CARP","IVEE","MOHK","NAPL")
 
 #Actual proportions:
 size_prop <- prop.table(as.matrix(chi_size), 1)
+size_prop
 
 #Chi-squared 
 #H0: No significant difference between proportions at the different sites
 
 size_x2 <- chisq.test(chi_size)
+size_x2
 ```
 There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = ....., p < 0.001). Notably, ...
