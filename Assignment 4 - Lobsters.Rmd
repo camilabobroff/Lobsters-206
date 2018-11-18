@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4, Lobster"
-author: "Camila Bobroff, Lydia Bleifuss"
+author: "Lydia Bleifuss & Camila Bobroff"
 date: "11/14/2018"
 output:
   html_document: default
@@ -80,7 +80,8 @@ abun_point <- ggplot(abun_trap, (aes(x = YEAR,
 abun_point
 ```
 
-**Figure 1. Lobster Abundance in the Santa Barbara Channel (2012 - 2017).** Counts of California spiny lobster collected annually in late summer before the fishing season (data collected by SBC LTER)^3^.
+**Figure 1. Lobster Abundance in the Santa Barbara Channel (2012 - 2017).**  
+Counts of California spiny lobster collected annually in late summer before the fishing season (data collected by SBC LTER)^3^.
 ```{r echo = FALSE, message = FALSE}
 #Trap Totals
 trap_point <- ggplot(abun_trap, (aes(x = YEAR,
@@ -99,7 +100,8 @@ trap_point <- ggplot(abun_trap, (aes(x = YEAR,
 trap_point
 ```
 
-**Figure 2. Lobster Traps in the Santa Barbara Channel (2012 - 2017).** Counts of commercial trap floats collected every two to four weeks during the fishing season (data collected by SBC LTER)^3^.
+**Figure 2. Lobster Traps in the Santa Barbara Channel (2012 - 2017).**  
+Counts of commercial trap floats collected every two to four weeks during the fishing season (data collected by SBC LTER)^3^.
 
 Part 2. Compare mean lobster size by site in 2017.
 
@@ -167,8 +169,6 @@ lobster_aov <- aov(SIZE ~ SITE, data = lob_size_tidy2017)
 #Step 5: Post-hoc test (Tukey's HSD)
 
 lobster_ph <- TukeyHSD(lobster_aov)
-lobster_ph
-summary(lobster_aov)
 ```
 
 ```{r, r ANOVA_table, echo = FALSE, results = 'asis', message = FALSE}
@@ -191,10 +191,7 @@ lob_boxplot <- ggplot(lob_size_tidy2017, aes(x = SITE, y = SIZE))+
                    "IVEE" = "Isla Vista",
                    "MOHK" = "Mohawk Reef",
                    "NAPL" = "Naples Reef"))
- lob_boxplot
-
-# Global test
-compare_means(SIZE ~ SITE,  data = lob_size_tidy, method = "anova")
+lob_boxplot
 
 lob_size_graph <- lob_size_summary %>% 
    ggplot(aes(x = SITE, y = mean_size2017)) +
@@ -211,7 +208,6 @@ lob_size_graph <- lob_size_summary %>%
                    "IVEE" = "Isla Vista",
                    "MOHK" = "Mohawk Reef",
                    "NAPL" = "Naples Reef"))
- 
 lob_size_graph
 
 lob_table2017 <- lob_size_summary %>% 
@@ -229,9 +225,11 @@ lob_table2017 <- lob_size_summary %>%
   
 lob_table2017
 ```
-**Table 1. Mean lobster size ANOVA results (2017).**
+**Table 1. Mean lobster size summary by site (2017).**  
 
-**Figure 3. Mean Lobster Size in the Santa Barbara Channel (2017)**
+**Table 2. Mean lobster size ANOVA results (2017).**
+
+**Figure 3. Mean Lobster Size in the Santa Barbara Channel (2017)**  
 2017 mean lobster carapace length (mm) by site, measured in late summer before the fishing season. Error bars indicate ± 1 standard deviation. Brackets indicate *p*-values for significantly different means as determined by one-way ANOVA (F(4, 1663) = 3.4, *p* = 0.009, $\alpha$ = 0.05) with post-hoc Tukey's HSD ($\alpha$ = 0.05). Data source: SBC LTER)^3^.
 
 In 2017, mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statistic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
@@ -252,7 +250,12 @@ graph_size_change <- lob_size_tidy %>%
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"))+
   scale_y_continuous(expand = c(0,0), limits=c(0,130))+
-  scale_y_continuous(expand = c(0,0), limits=c(0,130))
+  scale_y_continuous(expand = c(0,0), limits=c(0,130))+
+  scale_x_discrete(labels=c("AQUE" = "Arroyo Quemado",
+                   "CARP" = "Carpinteria",
+                   "IVEE" = "Isla Vista",
+                   "MOHK" = "Mohawk Reef",
+                   "NAPL" = "Naples Reef"))
 graph_size_change
 
 lob_size_IVEE <- lob_size_tidy %>% 
@@ -263,7 +266,8 @@ lob_size_IVEE <- lob_size_tidy %>%
 IVEE_summary <- lob_size_IVEE %>% 
   summarize(
     mean_size = mean(SIZE),
-    sample_size = length(SIZE) #Sample sizes are VERY different, only 26 observations for IVEE in 2012
+    sample_size = length(SIZE), #Sample sizes are VERY different, only 26 observations for IVEE in 2012
+    sd_size = sd(SIZE)
   )
 
 lob_size_NAPL <- lob_size_tidy %>% 
@@ -296,7 +300,8 @@ lob_size_MOHK <- lob_size_tidy %>%
 MOHK_summary <- lob_size_MOHK %>% 
   summarize(
     mean_size = mean(SIZE),
-    sample_size = length(SIZE)
+    sample_size = length(SIZE),
+    sd_size = sd(SIZE)
   )
 
 lob_size_CARP <- lob_size_tidy %>% 
@@ -373,7 +378,6 @@ CARP_ftest <- lob_size_CARP %>%
 
 IVEE_ttest <- lob_size_IVEE %>%
   t.test(SIZE ~ YEAR, var.equal = TRUE, alternative = "less", data = ., conf.level = 0.975)
-IVEE_ttest
 #P=0.03, reject the null
 
 #Power analysis
@@ -402,7 +406,6 @@ NAPL_2017 <- lob_size_NAPL %>%
  pull(SIZE)
 
 NAPL_effsize <- cohen.d(NAPL_2012,NAPL_2017)
-NAPL_effsize
 #Small effect size
 
 #Step 3: Two sided, two sample t-test to compare lobster size at non-MPA sites (AQUE, MOHK, and CARP)
@@ -458,8 +461,14 @@ CARP_effsize <- cohen.d(CARP_2012,CARP_2017)
 #Negligible effect size
 
 ```
-Mean lobster lengths in Isla Vista (mean ± sd [units], n = sample size) and Mohawk Reef (mean ± sd [units], n = sample size) differ signifcantly in 2012 and 2017 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.05], t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05, respectively]). Despite the significant findings that lobster length in 2017 was larger than 2012 for Isla Vista, an MPA site, there is a small effect size and number of observations was very low for 2012 (6 observations). On the other hand, lobsters at Mohawk Reef (a non-MPA site) were significantly smaller in 2017 than in 2012, with a medium effect size. Given these results, while there is an overall increase in lobster lengths at MPA sites, the magnitude of this increase is small. However, the decrease in lobster size in non-MPA sites in combination with the medium effect size is notable.
-(NOTE TO SELF:NEEDS TO BE RE-WORDED)
+Mean lobster lengths at Isla Vista, an MPA site, were significantly larger in 2017 than in 2012 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.025]. Despite these significant findings there is a small effect size (Cohen's d = 0.38) and number of observations between the two years were very different ($\overline{X}$ = 66.08 ± 12.09 [mm], n = 26, $\overline{X}$ = 71.45 ± 14.32 [mm], n = 606, for 2012 and 2017, respectively).
+
+Mean lobster lengths at Mohawk Reef, a non-MPA site, differed significantly between 2012 and 2017 [t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05]. Furthermore, there is a medium effect size (Cohen's d = 0.54) between the mean lobster lengths at Mohawk Reef in 2012 and 2017 ($\overline{X}$ = 77.25 ± 10.59 [mm], n = 83, $\overline{X}$ = 72.00 ± 9.28 [mm], n = 178, for 2012 and 2017, respectively).
+
+While there results show an overall increase in lobster lengths at MPA sites, the magnitude of this increase is small. However, the decrease in lobster size at Mohawk Reef, non-MPA site, in combination with the medium effect size is notable.
+
+**Table 3. Lobster size measurements (mm) at Isla Vista and Mohawk Reef sites in 2012 to 2017.**  
+Values represente mean ± standard deviation, and sample sizes are listed directly below for each site.
 
 Part 4. Proportions of "legal" lobsters at the 5 sites in 2017
 
@@ -481,10 +490,12 @@ rownames(chi_size) <- c("AQUE","CARP","IVEE","MOHK","NAPL")
 
 #Actual proportions:
 size_prop <- prop.table(as.matrix(chi_size), 1)
-
 #Chi-squared 
 #H0: No significant difference between proportions at the different sites
 
 size_x2 <- chisq.test(chi_size)
 ```
-There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = ....., p < 0.001). Notably, ... (ADD MORE HERE)
+**Table 4. Counts and proportions of lobsters below and above the legal limit, by site.**
+Values indicated are counts, with proportion (by site) in italics. Lobsters above or below the legal limit differ significantly by site ($\chi^2${`r size_x2$parameter`} = 18.50, *p* = 0.001). Data source: SBC LTER)^3^.
+
+There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = 18.50, *p* = 0.001). Notably, lobsters above the legal limit at Naples Reef, an MPA site, (33%) was remarkably higher than those observed at Mohawk Reef, a non-MPA site (13%). 
