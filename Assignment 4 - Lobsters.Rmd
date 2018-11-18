@@ -62,22 +62,6 @@ abun_trap <- full_join(abun_year, trap_year) %>%
 ```{r, echo = FALSE, message = FALSE}
 #Creating Scatter-plots for question 1. 
 
-#Trap Totals
-trap_point <- ggplot(abun_trap, (aes(x = YEAR,
-      y = sum_trap,label = ""))) +
-  geom_point(aes(color = Site))+
-  theme_classic() +
-  scale_size(range = c(0,9)) +
-  geom_line(aes(color = Site), size = 0.5) +
-  scale_y_continuous(expand = c(0,0), limits = c(0,1300)) +
-  labs(x = "Year", y = "Site Trap Totals") +
-  theme(text = element_text(family = "Times New Roman")) +
-  scale_colour_discrete(name="Site",
-                         breaks=c("AQUE", "CARP", "IVEE", "MOHK", "NAPL"),
-                         labels=c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef")) #Change legend labels
-
-trap_point
-
 #Abundance Totals 
 abun_point <- ggplot(abun_trap, (aes(x = YEAR,
       y = sum_abun,label = ""))) +
@@ -94,6 +78,21 @@ abun_point <- ggplot(abun_trap, (aes(x = YEAR,
 
 abun_point
 
+#Trap Totals
+trap_point <- ggplot(abun_trap, (aes(x = YEAR,
+      y = sum_trap,label = ""))) +
+  geom_point(aes(color = Site))+
+  theme_classic() +
+  scale_size(range = c(0,9)) +
+  geom_line(aes(color = Site), size = 0.5) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,1300)) +
+  labs(x = "Year", y = "Site Trap Totals") +
+  theme(text = element_text(family = "Times New Roman")) +
+  scale_colour_discrete(name="Site",
+                         breaks=c("AQUE", "CARP", "IVEE", "MOHK", "NAPL"),
+                         labels=c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef")) #Change legend labels
+
+trap_point
 ```
 
 Part 2. Compare mean lobster size by site in 2017.
