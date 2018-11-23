@@ -1,15 +1,22 @@
 ---
-title: "Assignment 4, Lobster"
-author: "Lydia Bleifuss & Camila Bobroff"
-date: "11/14/2018"
+title: "206_Assignment_4_Lobsters"
+author: "Lydia Bleifuss and Camila Bobroff"
+date: "11/15/18"
 output:
   html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+Analyzing California Spiny Lobster Abundance, Size and Fishing Implications
 
+A brief assessment conducted with Spiny Lobster samples taken from five sites in the Santa Barbara Channel from 2012 through 2017
+
+Lydia Bleifuss & Camila Bobroff
+Bren School of Environmental Science and Management
+University of California, Santa Barbara 
 ```{r, include = FALSE}
 library(tidyverse)
 library(pwr)
@@ -32,6 +39,13 @@ library(xtable)
 lob_size_abun <- read_csv("lobster_size_abundance.csv")
 lob_trap <- read_csv("lobster_traps.csv")
 ```
+Introduction
+
+Southern California’s Spiny Lobster has been fished commercially since the 1800s. The Santa Barbara Channel Spiny Lobster fishery is one of California’s most economically critical, and has also undergone concerning population changes within the last decade.2 Spiny Lobster were being harvested at record rates from the late 2000s to 2010. Improvements in fishing technology and increases in recreational fishing however, combined with an observed 15% decline in reported lobsters caught, necessitated improved monitoring.2 
+
+The Santa Barbara Coastal Long Term Ecological Research Project (SBC LTER), operating within University of California, Santa Barbara, has lead data collection surrounding this topic in conjunction with the National Science Foundation’s Long Term Ecological Research Network since the 1980s. In 2012, five Santa Barbara Coastal sites which were established close to the mainland: Arroyo Quemado (AQUE), Naples Reef (NAPL), Mohawk Reef (MOHK), Isla Vista (IVEE), and Carpinteria (CARP). Of those, Naples and Isla Vista were designated no-take marine protected areas (MPAs). MPAs, or oceanic corridors defined by boundaries in which human activity is limited and fishing is restricted, are established to promote marine biodiversity. In some cases, MPA parameters are selected with specific species targets in mind.1 
+
+Although, Spiny Lobster size, abundance, and fishing pressure in the Santa Barbara Chanel has been monitored since 2012, overall lack of previously collected data for this fishery confines analysis relative to recent years.3 In this report, we utilize data that has been collected by the SBC LTER project from 2012 through 2017 at the five sites. The purpose of this analysis is to describe lobster abundance and size relative to trapping presence and to determine the significance of MPA designation in relation to lobster size and abundance over time. 
 
 Part 1. Lobster abundance and fishing pressure (2012 - 2017)
 
