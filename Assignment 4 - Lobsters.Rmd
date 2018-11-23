@@ -14,9 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ###A brief assessment conducted with Spiny Lobster samples taken from five sites in the Santa Barbara Channel from 2012 through 2017
 
-#####Lydia Bleifuss & Camila Bobroff
-#####Bren School of Environmental Science and Management
-#####University of California, Santa Barbara 
+Lydia Bleifuss & Camila Bobroff
+
+Bren School of Environmental Science and Management
+
+University of California, Santa Barbara 
 ```{r, include = FALSE}
 library(tidyverse)
 library(pwr)
@@ -55,7 +57,7 @@ The information compiled in this dataset including date, site, site location and
 
 ###Results and Discussion
 
-*Lobster abundance and fishing pressure (2012 - 2017)*
+####*Lobster abundance and fishing pressure (2012 - 2017)*
 To gain an initial impression of lobster abundance and fishing pressure we compared all five sites, MPA and non-MPA, contrasting relative abundance and trap total data. No traps were observed at the two MPA sites, Isla Vista and Naples Reef, from 2012 to 2017. Overall increases in Isla Vista and Carpinteria lobster abundance is notable, and dramatically so from 2016 to 2017. However, while Carpinteria trap totals decreased significantly from 2016-2017, Isla Vista totals remained constant at zero. Despite 2015 count peaks for Mohawk and Naples, abundance levels at Mohawk Reef and Naples Reef lobster in 2017 are relatively lower than Isla Vista and Carpinteria. All three non-MPA sites appear to decrease trap totals from 2016 to 2017. Despite Isla Vista and Naples MPA designation, abundance at these two sites does not appear to react similarly year to year.
 
 ```{r, echo = FALSE, message = FALSE}
@@ -126,7 +128,7 @@ trap_point
 **Figure 2. Lobster Traps in the Santa Barbara Channel (2012 - 2017).**  
 Counts of commercial trap floats collected every two to four weeks during the fishing season. Data used with permission from SBC LTER^3^.
 
-*Compare mean lobster size by site in 2017*
+#####*Compare mean lobster size by site in 2017*
 Lobster carapace length (mm) differed significantly between the five LTER sites in 2017 (one-way ANOVA, F(4, 1663) = 3.42, p = .009; Table 2). Post-hoc analysis by Tukey’s HSD revealed that mean lobster carapace length differs significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (pairwise p = 0.023 and 0.004, respectively). While lobsters at one of the MPA sites (Naples Reef) did have larger carapace length than those at a non-MPA site (Carpinteria), lobsters at Isla Vista, also protected, did not show significantly different results from a non-MPA site. These results do not indicate that MPA designation is associated with lobster size. 
 
 ```{r, echo = FALSE, message = FALSE}
@@ -215,7 +217,6 @@ lob_boxplot <- ggplot(lob_size_tidy2017, aes(x = SITE, y = SIZE))+
                    "IVEE" = "Isla Vista",
                    "MOHK" = "Mohawk Reef",
                    "NAPL" = "Naples Reef"))
-lob_boxplot
 
 lob_size_graph <- lob_size_summary %>% 
    ggplot(aes(x = SITE, y = mean_size2017)) +
@@ -250,17 +251,20 @@ lob_table2017 <- lob_size_summary %>%
 lob_table2017
 ```
 **Table 1. Mean lobster size summary by site (2017).**  
-Data source: SBC LTER^3^. 
-* Indicates an MPA site
+
+Data source: SBC LTER^3^.
+
+(*)Indicates an MPA site
 
 **Table 2. Mean lobster size ANOVA results (2017).**
+
 Data source: SBC LTER^3^.
 
 **Figure 3. Mean Lobster Size in the Santa Barbara Channel (2017)**  
 2017 mean lobster carapace length (mm) by site, measured in late summer before the fishing season. Error bars indicate ± 1 standard deviation. Brackets indicate *p*-values for significantly different means as determined by one-way ANOVA (F(4, 1663) = 3.4, *p* = 0.009, $\alpha$ = 0.05) with post-hoc Tukey's HSD ($\alpha$ = 0.05). Data used with permission from SBC LTER^3^.
 
 
-*Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)*
+#####*Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)*
 
 ```{r, echo = FALSE, message = FALSE}
 #Step 1: Calculate mean size at each site for 2012 and 2017. Data exploration.
@@ -282,7 +286,6 @@ graph_size_change <- lob_size_tidy %>%
                    "IVEE" = "Isla Vista",
                    "MOHK" = "Mohawk Reef",
                    "NAPL" = "Naples Reef"))
-graph_size_change
 
 lob_size_IVEE <- lob_size_tidy %>% 
   filter(SITE == "IVEE") %>%  
@@ -370,7 +373,7 @@ qqplots2012 <- ggplot(lob_size_tidy2012, aes(sample = SIZE)) +
 IVEE_ftest <- lob_size_IVEE %>% 
   var.test(SIZE ~ YEAR, data = .) # data = . is saying to access the most recent datafarme used
 
-IVEE_ftest # Retain the null hypothesis of equal variances (p-value = 0.30)
+# Retain the null hypothesis of equal variances (p-value = 0.30)
 # We can override the default setting in t.test() function of var.equal = FALSE
 
 NAPL_ftest <- lob_size_NAPL %>% 
@@ -495,9 +498,8 @@ These results indicate that lobsters at Mohawk Reef, non-MPA, were significantly
 **Table 3. Lobster size measurements (mm) at Isla Vista and Mohawk Reef sites in 2012 to 2017.**  
 Values represente mean ± standard deviation, and sample sizes are listed directly below for each site.These comparisons indicate the significant results from the T-test indicated above. Data source: SBC LTER^3^.
 
-Part 4. Proportions of "legal" lobsters at the 5 sites in 2017
+#####*Proportions of "legal" lobsters at the 5 sites in 2017*
 
-The legal minimum carapace size for lobster is 82.6 mm. What proportion of observed lobsters at each site are above the legal minimum? Does that proportion differ significantly across the 5 sites? 
 ```{r, echo = FALSE, message = FALSE}
 #Propper data frame 
 
@@ -520,7 +522,31 @@ size_prop <- prop.table(as.matrix(chi_size), 1)
 
 size_x2 <- chisq.test(chi_size)
 ```
+There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = 18.50, *p* = 0.001). Notably, lobsters above the legal limit at Naples Reef, an MPA site, (33%) was remarkably higher than those observed at Mohawk Reef, a non-MPA site (13%). However, the proportion of Isla Vista lobsters above the legal limit (21%), was not higher than both Arroyo Quemado (24%) and Carpinteria (25%). These results indicate that MPA designation does not have an absolute association with lobsters surpassing the 82.6 mm legal requirement.
+
 **Table 4. Counts and proportions of lobsters below and above the legal limit, by site.**
 Values indicated are counts, with proportion (by site) in italics. Lobsters above or below the legal limit differ significantly by site ($\chi^2${`r size_x2$parameter`} = 18.50, *p* = 0.001). Data source: SBC LTER)^3^.
 
-There is a significant association between observed lobsters above or below the legal limit (82.6 mm) and location ($\chi^2${`r size_x2$parameter`} = 18.50, *p* = 0.001). Notably, lobsters above the legal limit at Naples Reef, an MPA site, (33%) was remarkably higher than those observed at Mohawk Reef, a non-MPA site (13%). 
+###Conclusion
+The Santa Barbara Channel Spiny Lobster fishery remains an important economic hub, but also an intricate habitat and budding recreational playground. In order to properly promote both the societal benefits Spiny Lobsters provide and the species itself, data collection of lobster abundance and size must be further prioritized. In the Santa Barbara Channel, both commercial fisheries and marine governance authorities need to incorporate a better understanding of what factors influence fluxes in lobster count and size, and how such factors can be managed. Despite lack of apparent patterns between lobster abundance, size and fishing pressure throughout the first five years of data collection, continued and improved monitoring in the Channel is necessary to provide a clearer representation of associations between human influences and lobsters populations.
+
+**The following statements summarize the main results of our analysis:**
+ 
+1. *All five site abundance levels appeared to respond differently to either changes in trap presence or consistently prohibited trapping from 2012 to 2017, and with no apparent association between MPA or non-MPA designation.*
+2. *Although lobster carapace length differed significantly between the five sites in 2017, this result did not indicate that MPA designation is associated with lobster size.* 
+3. *Lobster carapace length compared between 2012 and 2017, indicates that lobsters at non-MPA sites decreased in size.*
+4. *Proportions of lobsters above and below the legal limit of 82.6 mm found at each of the five sites in 2017 differed significantly, however the results do not indicate that MPA sites contain more legal lobsters than non-MPA sites.* 
+
+Greater comprehension of Spiny Lobster population health in the Santa Barbara Channel would be promoted through increased data collection. Three out of the four results above not only indicate no significant results regarding associations between lobster abundance, size and fishing pressure, but in fact reveal some contradicting trends between the two MPA designated sites. This may be in part due to erratic and often small sample sizes, for example, 6 lobsters counted at Naples Reef in 2012, and a low number of sites. Without more MPA designated sites to compare to non-MPA, results are highly limited to Naples and Isla Vista. As each site can be influenced by a multitude of factors, any data analysis is less significant. Our analysis and report should not only be conducted yearly, but with heightened data collection in partnership with a greater number of sites to compare, both MPA and non-MPA. 
+
+As commercial fishing continues, coupled with recreational harvesting and climate uncertainties, the protection of the Santa Barbara Channel Spiny Lobster fishery depends on improved data collection, responsible analysis, and informed marine governance responses. 
+ 
+
+###References
+
+1.	Kay, Matthew C., Hunter S. Lenihan, Matthew J. Kotchen, and Christopher J. Miller (2012). Effects of Marine Reserves on California Spiny Lobster Are Robust and Modified by Fine-Scale Habitat Features and Distance from Reserve Borders.  Marine Ecology Progress Series 451. Retrieved November 2018, from 137–50. https://doi.org/10.3354/meps09592.
+
+2.	Miller, E. (2014). Status and Trend in the Southern California Spiny Lobster Fishery and Population: 1980-2011. Bulletin of the Southern California Academy of Sciences. Retrieved November 2018, from https://scholar.oxy.edu/scas/vol113/iss1/2. 
+
+3.	Reed, D. (2017). SBC LTER: Reef: Abundance, size and fishing effort for California Spiny Lobster (Panulirus interruptus), ongoing since 2012. Santa Barbara Coastal Long Term Ecological Research Project. Retrieved November 2018, from http://sbc.lternet.edu/cgi-bin/showDataset.cgi?docid=knb-lter-sbc.77
+
