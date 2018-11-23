@@ -10,13 +10,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Analyzing California Spiny Lobster Abundance, Size and Fishing Implications
+##Analyzing California Spiny Lobster Abundance, Size and Fishing Implications
 
-A brief assessment conducted with Spiny Lobster samples taken from five sites in the Santa Barbara Channel from 2012 through 2017
+###A brief assessment conducted with Spiny Lobster samples taken from five sites in the Santa Barbara Channel from 2012 through 2017
 
-Lydia Bleifuss & Camila Bobroff
-Bren School of Environmental Science and Management
-University of California, Santa Barbara 
+#####Lydia Bleifuss & Camila Bobroff
+#####Bren School of Environmental Science and Management
+#####University of California, Santa Barbara 
 ```{r, include = FALSE}
 library(tidyverse)
 library(pwr)
@@ -39,7 +39,7 @@ library(xtable)
 lob_size_abun <- read_csv("lobster_size_abundance.csv")
 lob_trap <- read_csv("lobster_traps.csv")
 ```
-Introduction
+####Introduction
 
 Southern California’s Spiny Lobster has been fished commercially since the 1800s. The Santa Barbara Channel Spiny Lobster fishery is one of California’s most economically critical, and has also undergone concerning population changes within the last decade.2 Spiny Lobster were being harvested at record rates from the late 2000s to 2010. Improvements in fishing technology and increases in recreational fishing however, combined with an observed 15% decline in reported lobsters caught, necessitated improved monitoring.2 
 
@@ -47,7 +47,16 @@ The Santa Barbara Coastal Long Term Ecological Research Project (SBC LTER), oper
 
 Although, Spiny Lobster size, abundance, and fishing pressure in the Santa Barbara Chanel has been monitored since 2012, overall lack of previously collected data for this fishery confines analysis relative to recent years.3 In this report, we utilize data that has been collected by the SBC LTER project from 2012 through 2017 at the five sites. The purpose of this analysis is to describe lobster abundance and size relative to trapping presence and to determine the significance of MPA designation in relation to lobster size and abundance over time. 
 
-Part 1. Lobster abundance and fishing pressure (2012 - 2017)
+####Data Analysis and Statistical Methods 
+
+Our data was collected by dive teams from 2012 through 2017 and summarized by Daniel Reed via SBC.3 The dataset produced two tables, the first indicating lobster abundance and size (carapace length in mm) collected at the five LTER sites annually before the start of the fishing season in late summer. The second displays the number of commercial trap floats in each site, indicating fishing pressure. Every two to four weeks throughout the October to March fishing season, total trap counts are collected at the five LTER sites and four additional sites near the mainland. Eight of the nine sites are LTER. For the purposes of our analysis, we will only be utilizing the five LTER sights included across both tables. 
+
+The information compiled in this dataset including date, site, site location and MPA designation, lobster length (mm) and relative count, and total trap counts per site, was utilized to calculate mean sample statistics. We used this data to detect any associations between lobster abundance and fishing pressure throughout the data collection years, compare mean lobster size across the 5 sites in 2017, changes in mean size at MPA and non-MPA sites between 2012 and 2017, and the proportion of legal lobsters at all 5 sites in 2017. More specifically, we used a one-way ANOVA with a post-hoc Tukey’s HSD test to compare mean lobster sizes, and used both one-sided and two-sided two sample Student’s T-tests (α = 0.025 and α = 0.05 respectively) to determine significance or lack thereof for changes in lobster size. Our analysis, including graphs and tables, was produced using R Statistical Software through R Studio (v. 1.1456).
+
+###Results and Discussion
+
+*Lobster abundance and fishing pressure (2012 - 2017)*
+To gain an initial impression of lobster abundance and fishing pressure we compared all five sites, MPA and non-MPA, contrasting relative abundance and trap total data. No traps were observed at the two MPA sites, Isla Vista and Naples Reef, from 2012 to 2017. Overall increases in Isla Vista and Carpinteria lobster abundance is notable, and dramatically so from 2016 to 2017. However, while Carpinteria trap totals decreased significantly from 2016-2017, Isla Vista totals remained constant at zero. Despite 2015 count peaks for Mohawk and Naples, abundance levels at Mohawk Reef and Naples Reef lobster in 2017 are relatively lower than Isla Vista and Carpinteria. All three non-MPA sites appear to decrease trap totals from 2016 to 2017. Despite Isla Vista and Naples MPA designation, abundance at these two sites does not appear to react similarly year to year.
 
 ```{r, echo = FALSE, message = FALSE}
 #Producing mean abundance by year
@@ -95,7 +104,7 @@ abun_point
 ```
 
 **Figure 1. Lobster Abundance in the Santa Barbara Channel (2012 - 2017).**  
-Counts of California spiny lobster collected annually in late summer before the fishing season (data collected by SBC LTER)^3^.
+Counts of California spiny lobster collected annually in late summer before the fishing season. Data used with permission from SBC LTER^3^.
 ```{r echo = FALSE, message = FALSE}
 #Trap Totals
 trap_point <- ggplot(abun_trap, (aes(x = YEAR,
@@ -115,9 +124,10 @@ trap_point
 ```
 
 **Figure 2. Lobster Traps in the Santa Barbara Channel (2012 - 2017).**  
-Counts of commercial trap floats collected every two to four weeks during the fishing season (data collected by SBC LTER)^3^.
+Counts of commercial trap floats collected every two to four weeks during the fishing season. Data used with permission from SBC LTER^3^.
 
-Part 2. Compare mean lobster size by site in 2017.
+*Compare mean lobster size by site in 2017*
+Lobster carapace length (mm) differed significantly between the five LTER sites in 2017 (one-way ANOVA, F(4, 1663) = 3.42, p = .009; Table 2). Post-hoc analysis by Tukey’s HSD revealed that mean lobster carapace length differs significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (pairwise p = 0.023 and 0.004, respectively). While lobsters at one of the MPA sites (Naples Reef) did have larger carapace length than those at a non-MPA site (Carpinteria), lobsters at Isla Vista, also protected, did not show significantly different results from a non-MPA site. These results do not indicate that MPA designation is associated with lobster size. 
 
 ```{r, echo = FALSE, message = FALSE}
 
@@ -240,15 +250,17 @@ lob_table2017 <- lob_size_summary %>%
 lob_table2017
 ```
 **Table 1. Mean lobster size summary by site (2017).**  
+Data source: SBC LTER^3^. 
+* Indicates an MPA site
 
 **Table 2. Mean lobster size ANOVA results (2017).**
+Data source: SBC LTER^3^.
 
 **Figure 3. Mean Lobster Size in the Santa Barbara Channel (2017)**  
-2017 mean lobster carapace length (mm) by site, measured in late summer before the fishing season. Error bars indicate ± 1 standard deviation. Brackets indicate *p*-values for significantly different means as determined by one-way ANOVA (F(4, 1663) = 3.4, *p* = 0.009, $\alpha$ = 0.05) with post-hoc Tukey's HSD ($\alpha$ = 0.05). Data source: SBC LTER)^3^.
+2017 mean lobster carapace length (mm) by site, measured in late summer before the fishing season. Error bars indicate ± 1 standard deviation. Brackets indicate *p*-values for significantly different means as determined by one-way ANOVA (F(4, 1663) = 3.4, *p* = 0.009, $\alpha$ = 0.05) with post-hoc Tukey's HSD ($\alpha$ = 0.05). Data used with permission from SBC LTER^3^.
 
-In 2017, mean lobster carapace length differ significantly between Naples Reef and Carpinteria and between Naples Reef and Isla Vista (F(df) = statistic, P = 0.02 & 0.004 respectively, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05.)
 
-Part 3. Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)
+*Changes in lobster size at MPA and non-MPA sites (comparing only 2012 and 2017 sizes)*
 
 ```{r, echo = FALSE, message = FALSE}
 #Step 1: Calculate mean size at each site for 2012 and 2017. Data exploration.
@@ -475,14 +487,13 @@ CARP_effsize <- cohen.d(CARP_2012,CARP_2017)
 #Negligible effect size
 
 ```
-Mean lobster lengths at Isla Vista, an MPA site, were significantly larger in 2017 than in 2012 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.025]. Despite these significant findings there is a small effect size (Cohen's d = 0.38) and number of observations between the two years were very different ($\overline{X}$ = 66.08 ± 12.09 [mm], n = 26, $\overline{X}$ = 71.45 ± 14.32 [mm], n = 606, for 2012 and 2017, respectively).
+Mean lobster carapace lengths at Isla Vista, an MPA site, were significantly larger in 2017 than in 2012 [t(`r IVEE_ttest$parameter`) = `r round(IVEE_ttest$statistic,2)`, *p* = `r round(IVEE_ttest$p.value,3)`, $\alpha$ = 0.025]. Despite these significant findings there is a small effect size (Cohen's d = 0.38) and the number of observations between the two years were very different ($\overline{X}$ = 66.08 ± 12.09 [mm], n = 26, $\overline{X}$ = 71.45 ± 14.32 [mm], n = 606, for 2012 and 2017, respectively). Mean lobster lengths at Mohawk Reef, a non-MPA site, differed significantly between 2012 and 2017 [t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05]. Furthermore, there is a medium effect size (Cohen's d = 0.54) between the mean lobster lengths at Mohawk Reef in 2012 and 2017 ($\overline{X}$ = 77.25 ± 10.59 [mm], n = 83, $\overline{X}$ = 72.00 ± 9.28 [mm], n = 178, for 2012 and 2017, respectively).
 
-Mean lobster lengths at Mohawk Reef, a non-MPA site, differed significantly between 2012 and 2017 [t(`r MOHK_ttest$parameter`) = `r round(MOHK_ttest$statistic,2)`, *p* = `r round(MOHK_ttest$p.value,3)`, $\alpha$ = 0.05]. Furthermore, there is a medium effect size (Cohen's d = 0.54) between the mean lobster lengths at Mohawk Reef in 2012 and 2017 ($\overline{X}$ = 77.25 ± 10.59 [mm], n = 83, $\overline{X}$ = 72.00 ± 9.28 [mm], n = 178, for 2012 and 2017, respectively).
+These results indicate that lobsters at Mohawk Reef, non-MPA, were significantly smaller in 2017 than in 2012, with a medium effect size. While the data show an overall increase in lobster lengths at MPA sites, the magnitude of this increase is small. However, the decrease in lobster size in non-MPA sites, considering the medium effect size is notable. In this case, non-MPA status appears to implicate decrease in lobster length from 2012 to 2017. 
 
-While there results show an overall increase in lobster lengths at MPA sites, the magnitude of this increase is small. However, the decrease in lobster size at Mohawk Reef, non-MPA site, in combination with the medium effect size is notable.
 
 **Table 3. Lobster size measurements (mm) at Isla Vista and Mohawk Reef sites in 2012 to 2017.**  
-Values represente mean ± standard deviation, and sample sizes are listed directly below for each site.
+Values represente mean ± standard deviation, and sample sizes are listed directly below for each site.These comparisons indicate the significant results from the T-test indicated above. Data source: SBC LTER^3^.
 
 Part 4. Proportions of "legal" lobsters at the 5 sites in 2017
 
